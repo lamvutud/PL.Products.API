@@ -1,0 +1,170 @@
+﻿@model IEnumerable<PL.Products.API.Entities.Product>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Catalog</title>
+    <style>
+        /* General Layout */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f4f4f9;
+            margin: 20mm 15mm; /* For printing purposes */
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            padding: 20px;
+        }
+
+        /* Header */
+        header {
+            background-color: #007bff;
+            color: #fff;
+            text-align: center;
+            padding: 20px 0;
+        }
+
+            header h1 {
+                font-size: 2rem;
+                margin: 0;
+            }
+
+        /* Table styles */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        thead {
+            display: table-header-group; /* Ensure headers repeat on each new page */
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        /* Alternate row coloring */
+        tbody tr:nth-child(odd) {
+            background-color: #f9f9f9;
+        }
+
+        tbody tr:nth-child(even) {
+            background-color: #fff;
+        }
+
+        tbody tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        /* Ensure row stays together on the same page */
+        tbody tr {
+            page-break-inside: avoid;
+        }
+
+        th {
+            font-weight: bold;
+            text-align: left;
+        }
+
+        .product-name {
+            font-weight: bold;
+            white-space: nowrap; /* Product name stays on one line */
+        }
+
+        .code-badge {
+            display: inline-block;
+            padding: 5px 10px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            color: #007bff;
+            background-color: #e7f3ff;
+            border-radius: 4px;
+        }
+
+        .description {
+            color: #555;
+            white-space: normal; /* Allow descriptions to wrap */
+            word-wrap: break-word; /* Ensure long words don't overflow */
+        }
+
+        /* Print Margins and Page Breaks */
+        @@media print {
+            body
+
+        {
+            margin: 20mm 15mm;
+        }
+
+        .page-break {
+            page-break-before: always;
+        }
+
+        thead {
+            display: table-header-group;
+        }
+
+        tfoot {
+            display: table-row-group;
+        }
+
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Page Header -->
+        <header>
+            <h1>Product Catalog</h1>
+        </header>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Code</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (!Model.Any())
+                {
+                    <tr>
+                        <td colspan="3" style="text-align: center; padding: 20px; color: #888;">No products available</td>
+                    </tr>
+                }
+                else
+                {
+                    @foreach (var product in Model)
+                    {
+                        <tr>
+                            <td class="product-name">@product.Name</td>
+                            <td><span class="code-badge">@product.Code</span></td>
+                            <td class="description">@product.Description</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

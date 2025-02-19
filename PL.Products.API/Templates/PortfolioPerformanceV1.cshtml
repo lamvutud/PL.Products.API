@@ -1,0 +1,226 @@
+﻿@model IEnumerable<PL.Products.API.Entities.PortfolioPerformance>
+
+<!DOCTYPE html>
+<html lang="en">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GIPS Report</title>
+    <style>
+        /* General Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            color: #333;
+            line-height: 1.6;
+            margin: 20mm 15mm;
+        }
+
+        /* Page Layout */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+        }
+
+        header {
+            text-align: center;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #007bff;
+        }
+
+        footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 0.8rem;
+            color: #888;
+        }
+
+        .page-break {
+            page-break-after: always;
+        }
+
+        /* Title Page */
+        .title-page {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
+            background-color: #f4f4f9;
+        }
+
+            .title-page h1 {
+                font-size: 3rem;
+                color: #007bff;
+            }
+
+            .title-page p {
+                font-size: 1.2rem;
+                color: #555;
+                margin-top: 10px;
+            }
+
+        /* Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        tbody tr:nth-child(odd) {
+            background-color: #f9f9f9;
+        }
+
+        tbody tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        /* Print Styles */
+        @@media print {
+            body {
+                margin: 20mm 15mm;
+            }
+
+            thead {
+                display: table-header-group;
+            }
+
+            tfoot {
+                display: table-row-group;
+            }
+
+            .page-break {
+                page-break-after: always;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Title Page -->
+    <div class="title-page">
+        <div>
+            <h1>GIPS Report</h1>
+            <p>Portfolio Performance Summary</p>
+            <p>Generated on: @DateTime.Now.ToString("MMMM dd, yyyy")</p>
+        </div>
+    </div>
+
+    <div class="page-break"></div>
+
+    <!-- Report Header -->
+    <header>
+        <h1>Performance Overview</h1>
+    </header>
+
+    <!-- Chart Section -->
+    <div class="container">
+        <h2>Portfolio Performance</h2>
+        <canvas id="performanceChart" width="800" height="400"></canvas>
+    </div>
+
+    <div class="page-break"></div>
+
+    <!-- Detailed Table -->
+    <header>
+        <h1>Performance Data</h1>
+    </header>
+
+    <div class="container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Year</th>
+                    <th>Net Return</th>
+                    <th>Benchmark Return</th>
+                    <th>Assets (Million $)</th>
+                    <th>Standard Deviation</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (!Model.Any())
+                {
+                    <tr>
+                        <td colspan="5" style="text-align: center;">No data available</td>
+                    </tr>
+                }
+                else
+                {
+                    @foreach (var performance in Model)
+                    {
+                        <tr>
+                            <td>@performance.Year</td>
+                            <td>@performance.NetReturn %</td>
+                            <td>@performance.BenchmarkReturn %</td>
+                            <td>@performance.AssetsInMillions M</td>
+                            <td>@performance.StandardDeviation %</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <footer>
+        <p>GIPS Report - Confidential</p>
+    </footer>    
+    <script type="text/javascript">
+         var performanceData = @PerformanceDataJson;
+
+         // Chart.js Line Chart Example
+         var xValues = performanceData.map(function(item) { return item.Year; });
+         var netReturnData = performanceData.map(function(item) { return item.NetReturn; });
+         var benchmarkReturnData = performanceData.map(function(item) { return item.BenchmarkReturn; });
+         var assetsData = performanceData.map(function(item) { return item.AssetsInMillions; });
+         var standardDeviationData = performanceData.map(function(item) { return item.StandardDeviation; });
+
+         var chart = new Chart('performanceChart', {
+             type: "line",
+             data: {
+                 labels: xValues,
+                 datasets: [{
+                     data: netReturnData,
+                     borderColor: "red",
+                     fill: false,
+                     label: "Net Return"
+                 }, {
+                     data: benchmarkReturnData,
+                     borderColor: "green",
+                     fill: false,
+                     label: "Benchmark Return"
+                 }, {
+                     data: standardDeviationData,
+                     borderColor: "blue",
+                     fill: false,
+                     label: "Standard Deviation"
+                 }]
+             },
+             options: {
+                 legend: { display: true }
+             }
+         });
+       
+    </script>
+</body>
+</html>

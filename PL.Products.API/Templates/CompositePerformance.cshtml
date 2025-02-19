@@ -1,0 +1,372 @@
+﻿@model PL.Products.API.Html.GipsReportViewModel
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title>@Model.ReportTitle</title>
+	<style>	
+
+		body {		
+			font-family: Arial, sans-serif;
+		}
+
+		.page-break {
+			page-break-after: always;
+		}
+
+		.table {
+			width: 100%;
+			border-collapse: collapse;
+		}
+
+			.table th, .table td {
+				border: 1px solid black;
+				padding: 8px;
+				text-align: center;
+			}
+
+			.table th {
+				font-weight: bold;
+			}
+
+		.footer {
+			position: fixed;
+			bottom: 10px;
+			width: 100%;
+			text-align: center;
+			font-size: 12px;
+		}
+
+		#toc-content a {
+			display: block;
+			text-decoration: none;
+			color: black;
+			margin-bottom: 5px;
+		}
+
+			#toc-content a[data-level="h2"] {
+				margin-left: 20px;
+			}
+
+			#toc-content a[data-level="h3"] {
+				margin-left: 40px;
+			}
+
+		.chart-container {
+			width: 50%;
+			display: inline-block;
+			padding: 10px;
+			box-sizing: border-box;
+			vertical-align: top; /* Align charts to the top of the container */
+		}
+
+		canvas {
+			width: 100% !important;
+			/* height: 400px !important; /* Same height for both charts */ */
+		}
+
+		.charts-wrapper {
+			width: 100%;
+			display: flex;
+			justify-content: space-between;
+		}
+
+		/* Styling for the header number in superscript (small and near the text) */
+		th.return-column, th.benchmark-column {
+			position: relative;
+		}
+
+		.superscript {
+			font-size: 0.8em;
+			vertical-align: super; /* Align the superscript with the text */
+			margin-left: 5px; /* Adjust spacing between the superscript and the text */
+		}
+
+		/* Styling for the footnote */
+		.table-footnote {
+			font-size: 12px;
+			font-style: italic;
+			margin-top: 10px;
+			text-align: left;
+		}
+
+		/* Styling for the small footnote number in the text */
+		.footnote-number {
+			font-size: 10px; /* Smaller font for footnote number */
+			vertical-align: top;
+		}
+
+		.total-row td {
+			font-weight: bold;
+		}
+
+		.disclaimer {
+			column-count: 2;
+			column-gap: 40px; /* Adjust the space between columns */
+			text-align: justify; /* Optional: Justifies the text */
+		}
+
+	</style>
+	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+	<!-- First Page -->
+	<div>
+		<img src="@Model.LogoUrl" alt="Company Logo" style="width: 150px;" />
+		<h1>@Model.ReportTitle</h1>
+		<div class="footer">@Model.CompanyName - @Model.CompanyAddress</div>
+	</div>
+
+	<div class="page-break"></div>
+
+	<!-- Table of Contents -->
+	<h1>Table of Contents</h1>
+	<div id="toc-content"></div>
+
+	<div class="page-break"></div>
+
+	<!-- Second Page: Table -->
+	<h2>Composite Performance</h2>
+
+	@{
+		// Determine superscript numbers and explanations for each column
+		var returnSuperscriptNumber = 0;
+		var benchmarkSuperscriptNumber = 0;
+		var returnSuperscriptText = string.Empty;
+		var benchmarkSuperscriptText = string.Empty;
+
+		// Check for conditions in the Return column
+		if (Model.Performances.Any(p => p.Return < 0))
+		{
+			returnSuperscriptNumber = 1;
+			returnSuperscriptText = "One or more returns are negative.";
+		}
+		else if (Model.Performances.Any(p => p.Return == null))
+		{
+			returnSuperscriptNumber = 1;
+			returnSuperscriptText = "Data is not complete.";
+		}
+
+		// Check for conditions in the Benchmark Return column
+		if (Model.Performances.Any(p => p.BenchmarkReturn < 0))
+		{
+			benchmarkSuperscriptNumber = returnSuperscriptNumber > 0 ? returnSuperscriptNumber + 1 : 1; // Benchmark superscript number depends on the Return column
+			benchmarkSuperscriptText = $"One or more benchmark returns are negative.";
+		}
+		else if (Model.Performances.Any(p => p.BenchmarkReturn == null))
+		{
+			benchmarkSuperscriptNumber = returnSuperscriptNumber > 0 ? returnSuperscriptNumber + 1 : 1; // Benchmark superscript number depends on the Return column
+			benchmarkSuperscriptText = $"Data is not complete for benchmark.";
+		}
+	}
+
+	<table class="table">
+		<thead>
+			<tr>
+				<th>Year</th>
+				<th class="return-column">
+					Return (%)
+					@if (returnSuperscriptNumber > 0)
+					{
+						<span class="superscript">@returnSuperscriptNumber</span> 
+					}
+				</th>
+				<th class="benchmark-column">
+					Benchmark Return (%)
+					@if (benchmarkSuperscriptNumber > 0)
+					{
+						<span class="superscript">@benchmarkSuperscriptNumber</span> 
+					}
+				</th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var perf in Model.Performances)
+			{
+				<tr>
+					<td>@perf.Year @(perf.IsPartialYear ? "*" : "")</td>
+					<td>@perf.Return</td>
+					<td>@perf.BenchmarkReturn</td>
+				</tr>
+			}
+			<tr class="total-row">
+				<td><strong>Total</strong></td>
+				<td>
+					<strong>
+						@Model.Performances.Sum(p => p.Return)
+					</strong>
+				</td>
+				<td>
+					<strong>
+						@Model.Performances.Sum(p => p.BenchmarkReturn)
+					</strong>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	@if (!string.IsNullOrEmpty(returnSuperscriptText))
+	{
+		<p class="table-footnote">
+			<span class="footnote-number">1)</span> @returnSuperscriptText
+		</p>
+	}
+
+	@if (!string.IsNullOrEmpty(benchmarkSuperscriptText))
+	{
+		<p class="table-footnote">
+			<span class="footnote-number">@benchmarkSuperscriptNumber)</span> @benchmarkSuperscriptText
+		</p>
+	}
+	
+	<!-- Charts -->
+	<div class="charts-wrapper">
+		<div class="chart-container">
+			<h3>Bar Chart</h3>
+			<canvas id="barChart"></canvas>
+		</div>
+
+		<div class="chart-container">
+			<h3>Line Chart</h3>
+			<canvas id="lineChart"></canvas>
+		</div>
+	</div>
+
+	<div class="page-break"></div>
+
+	<!-- Third Page: Disclaimer -->
+	<h2>Disclaimer</h2>
+	<div class="disclaimer">
+		<p><strong>Global Investment Performance Standards (GIPS) Report Disclaimer</strong></p>
+
+		<p>This report is prepared in compliance with the <strong>Global Investment Performance Standards (GIPS&reg;)</strong>. The firm claims compliance with GIPS and has been independently verified for the periods specified in the report. A copy of the verification report and a complete list of composite descriptions are available upon request.</p>
+
+		<p><em>Past performance is not indicative of future results</em>. Investment returns and principal values fluctuate, and investors may experience gains or losses. Performance is presented gross and net of fees. <strong>Gross performance</strong> does not reflect the deduction of investment management fees, brokerage commissions, or other expenses that may impact returns. <strong>Net performance</strong> reflects the deduction of fees as specified in the composite's fee schedule.</p>
+
+		<p>Returns are calculated using a time-weighted methodology, incorporating reinvestment of dividends and interest. All performance figures are expressed in the base currency of the composite. Exchange rate fluctuations may affect returns for investors transacting in different currencies.</p>
+
+		<p>The benchmark used for comparison is selected based on the strategy's investment objective and risk profile. Benchmarks may not be directly comparable to the composite due to differences in market exposure, risk, and other factors. <em>It is essential for investors to consider their own financial situation and investment objectives before making any investment decisions.</em></p>
+
+		<p>The information contained in this report is provided for informational purposes only and should not be considered an offer to buy or sell any financial instrument. No representation is made that any strategy will achieve its intended results, and all investments involve risks, including possible loss of principal.</p>
+
+		<p><strong>Important Risk Disclosures:</strong></p>
+		<ul>
+			<li>Performance data may be affected by market conditions, economic factors, and regulatory changes.</li>
+			<li>Past performance does not guarantee future results.</li>
+			<li>Risk factors such as liquidity constraints, leverage, and concentration may impact returns.</li>
+		</ul>
+
+		<p>This report is intended solely for institutional investors and should not be distributed to retail clients or the general public without prior consent. The firm reserves the right to update or modify the information presented in this document without prior notice.</p>
+
+		<p>For more information regarding performance calculations, investment risks, and composite construction, please contact us at <strong>[Insert Contact Information]</strong>.</p>
+
+	</div>
+
+	@* <div class="page-break"></div> *@
+
+	<!-- Fourth Page: Disclosures -->
+	<h2>Disclosures</h2>
+	<p>
+		Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+		Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure
+		dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+		proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+	</p>
+	<p>
+		Curabitur pretium tincidunt lacus. Nulla gravida orci a odio. Nullam varius, turpis et commodo pharetra, est eros bibendum elit,
+		nec luctus magna felis sollicitudin mauris. Integer in mauris eu nibh euismod gravida. Duis ac tellus et risus vulputate vehicula.
+		Donec lobortis risus a elit. Etiam tempor. Ut ullamcorper, ligula eu tempor congue, eros est euismod turpis, id tincidunt sapien
+		risus a quam. Maecenas fermentum consequat mi. Donec fermentum. Pellentesque malesuada nulla a mi. Duis sapien sem, aliquet nec,
+		commodo eget, consequat quis, neque. Aliquam faucibus, elit ut dictum aliquet, felis nisl adipiscing sapien, sed malesuada diam
+		lacus eget erat.
+	</p>
+
+	<script>
+		document.addEventListener("DOMContentLoaded", function () {
+			let toc = document.getElementById("toc-content");
+			let headings = document.querySelectorAll("h1, h2, h3");
+
+			headings.forEach((heading, index) => {
+				let level = heading.tagName.toLowerCase(); // h1, h2, or h3
+				heading.id = heading.id || `section-${index}`;
+
+				let link = document.createElement("a");
+				link.href = `#${heading.id}`;
+				link.textContent = heading.textContent;
+				link.setAttribute("data-level", level);
+
+				toc.appendChild(link);
+			});
+		});
+
+		var performanceData = @Raw(@Newtonsoft.Json.JsonConvert.SerializeObject(Model.Performances));
+		var years = performanceData.map(function(item) { return item.Year; });
+		var netReturnData = performanceData.map(function(item) { return item.Return; });
+		var benchmarkReturnData = performanceData.map(function(item) { return item.BenchmarkReturn; });
+
+		var barchart = new Chart("barChart", {
+			type: "bar",
+			data: {
+				labels: years,
+				datasets: [{
+					label: 'Net Return',
+					data: netReturnData,
+					backgroundColor: "red",
+					borderColor: "darkred",
+					borderWidth: 2
+				}, {
+					label: 'Benchmark',
+					data: benchmarkReturnData,
+					backgroundColor: "blue",
+					borderColor: "darkblue",
+					borderWidth: 2
+				}]
+			},
+			options: {
+				responsive: true,
+				plugins: {
+					legend: { display: true }
+				},
+					scales: {
+					y: {
+						min: -20,
+						max: 120
+					}
+				}
+			}
+		});
+
+		var linechart = new Chart("lineChart", {
+			type: "line",
+			data: {
+				labels: years,
+				datasets: [{
+					label: 'Net Return',
+					data: netReturnData,
+					borderColor: "red",
+					fill: false
+				}, {
+					label: 'Benchmark',
+					data: benchmarkReturnData,
+					borderColor: "blue",
+					fill: false
+				}]
+			},
+			options: {
+				responsive: true,
+				scales: {
+					y: {
+						min: -20,
+						max: 120
+					}
+				},
+				plugins: {
+					legend: { display: true }
+				}
+			}
+		});
+
+	</script>
+</body>
+</html>
