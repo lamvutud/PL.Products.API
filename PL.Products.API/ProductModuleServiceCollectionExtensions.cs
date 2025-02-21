@@ -1,8 +1,12 @@
 ﻿using System.Reflection;
 using PL.Products.API.Html;
 using PL.Products.API.Pdf;
-using PL.Products.API.Pdf.DinkToPdf;
+//using PL.Products.API.Pdf.DinkToPdf;
 using PL.Products.API.Pdf.Pdf;
+using PL.Products.API.Pdf.Playright;
+
+//using PL.Products.API.Pdf.Syncfusion;
+
 //using PL.Products.API.Pdf.PuppeteerSharp;
 
 //using PL.Products.API.Pdf.Syncfusion;
@@ -23,7 +27,7 @@ public static class ProductModuleServiceCollectionExtensions
         services.AddScoped<IHtmlWriter<ExportProductsToHtml>, ExportProductsToHtmlHandler>();
         //services.AddScoped<IPdfWriter<ExportProductsToPdf>, ExportProductsToPdfHandler>();
         services.AddScoped<IHtmlWriter<ExportPortfolioPerformancesToHtml>, ExportPortfolioPerformancesToHtmlHandler>();
-        services.AddScoped<IPdfWriter<ExportPortfolioPerformancesToPdf>, ExportPortfolioPerformancesToPdfHandler>();
+        //services.AddScoped<IPdfWriter<ExportPortfolioPerformancesToPdf>, ExportPortfolioPerformancesToPdfHandler>();
         services.AddScoped<IHtmlWriter<ExportCompositePerformancesToHtml>, ExportCompositePerformancesToHtmlHandler>();
         services.AddScoped<IPdfWriter<ExportCompositePerformancesToPdf>, ExportCompositePerformancesToPdfHandler>();        
         return services;

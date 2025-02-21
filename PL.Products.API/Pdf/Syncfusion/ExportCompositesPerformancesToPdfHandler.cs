@@ -24,32 +24,9 @@ public class ExportCompositePerformancesToPdfHandler : IPdfWriter<ExportComposit
     {
         HtmlToPdfConverter htmlToPdfConverter = new HtmlToPdfConverter();   
         BlinkConverterSettings settings = new BlinkConverterSettings(); 
-        var html = await _htmlWriter.GetStringAsync(new ExportCompositePerformancesToHtml { CompositePerformances = data.CompositePerformances });
-        //settings.EnableToc = true;
-        //HtmlToPdfToc toc = new HtmlToPdfToc();
-
-        //toc.Title = "HTML to PDF";
-        ////Set title alignment.
-        //toc.TitleAlignment = PdfTextAlignment.Center;
-        ////Create new HTML to PDF Toc Style.
-        //HtmlToPdfTocStyle style = new HtmlToPdfTocStyle();
-        ////Set background color.
-
-        ////Set font.
-        //style.Font = new PdfStandardFont(PdfFontFamily.Helvetica, 12);
-        ////Set fore color.
-
-        ////Set paddings.
-        //style.Padding = new PdfPaddings(5, 5, 5, 5);
-        ////Set toc style.
-        //toc.TitleStyle = style;
-        ////Set toc to webkit settings.
-        //toc.StartingPageNumber = 2;
-        //settings.Toc = toc;
-        
+        var html = await _htmlWriter.GetStringAsync(new ExportCompositePerformancesToHtml { CompositePerformances = data.CompositePerformances });     
         htmlToPdfConverter.ConverterSettings = settings;
-
-        PdfDocument document = htmlToPdfConverter.Convert(html, "");
+        PdfDocument document = htmlToPdfConverter.Convert(html, "http://example.com");
         using MemoryStream stream = new MemoryStream();
         document.Save(stream);
         return stream.ToArray();
