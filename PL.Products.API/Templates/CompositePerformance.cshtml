@@ -4,9 +4,9 @@
 <html>
 <head>
 	<title>@Model.ReportTitle</title>
-	<style>	
+	<style>
 
-		body {		
+		body {
 			font-family: Arial, sans-serif;
 		}
 
@@ -106,6 +106,20 @@
 			text-align: justify; /* Optional: Justifies the text */
 		}
 
+		#toc {
+			border: 1px solid #ccc;
+			padding: 10px;
+			margin-bottom: 20px;
+		}
+
+		h1, h2, h3 {
+			counter-increment: section;
+		}
+
+		.toc-entry {
+			display: flex;
+			justify-content: space-between;
+		}
 	</style>
 	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
@@ -114,15 +128,16 @@
 	<!-- First Page -->
 	<div>
 		<img src="@Model.LogoUrl" alt="Company Logo" style="width: 150px;" />
-		<h1>@Model.ReportTitle</h1>
-		<div class="footer">@Model.CompanyName - @Model.CompanyAddress</div>
+		<h1>@Model.ReportTitle</h1>		
 	</div>
 
-	<div class="page-break"></div>
+	<div class="page-break"></div> 
 
-	<!-- Table of Contents -->
+	<!-- Table of Contents -->	
 	<h1>Table of Contents</h1>
-	<div id="toc-content"></div>
+	<div id="toc">		
+		<ul id="toc-list"></ul>
+	</div>
 
 	<div class="page-break"></div>
 
@@ -169,14 +184,14 @@
 					Return (%)
 					@if (returnSuperscriptNumber > 0)
 					{
-						<span class="superscript">@returnSuperscriptNumber</span> 
+						<span class="superscript">@returnSuperscriptNumber</span>
 					}
 				</th>
 				<th class="benchmark-column">
 					Benchmark Return (%)
 					@if (benchmarkSuperscriptNumber > 0)
 					{
-						<span class="superscript">@benchmarkSuperscriptNumber</span> 
+						<span class="superscript">@benchmarkSuperscriptNumber</span>
 					}
 				</th>
 			</tr>
@@ -219,7 +234,7 @@
 			<span class="footnote-number">@benchmarkSuperscriptNumber)</span> @benchmarkSuperscriptText
 		</p>
 	}
-	
+
 	<!-- Charts -->
 	<div class="charts-wrapper">
 		<div class="chart-container">
@@ -283,22 +298,6 @@
 	</p>
 
 	<script>
-		document.addEventListener("DOMContentLoaded", function () {
-			let toc = document.getElementById("toc-content");
-			let headings = document.querySelectorAll("h1, h2, h3");
-
-			headings.forEach((heading, index) => {
-				let level = heading.tagName.toLowerCase(); // h1, h2, or h3
-				heading.id = heading.id || `section-${index}`;
-
-				let link = document.createElement("a");
-				link.href = `#${heading.id}`;
-				link.textContent = heading.textContent;
-				link.setAttribute("data-level", level);
-
-				toc.appendChild(link);
-			});
-		});
 
 		var performanceData = @Raw(@Newtonsoft.Json.JsonConvert.SerializeObject(Model.Performances));
 		var years = performanceData.map(function(item) { return item.Year; });

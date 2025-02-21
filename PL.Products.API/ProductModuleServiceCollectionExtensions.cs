@@ -3,7 +3,7 @@ using PL.Products.API.Html;
 using PL.Products.API.Pdf;
 //using PL.Products.API.Pdf.DinkToPdf;
 using PL.Products.API.Pdf.Pdf;
-using PL.Products.API.Pdf.Playright;
+//using PL.Products.API.Pdf.Playright;
 
 //using PL.Products.API.Pdf.Syncfusion;
 
@@ -11,7 +11,7 @@ using PL.Products.API.Pdf.Playright;
 
 //using PL.Products.API.Pdf.Syncfusion;
 
-//using PL.Products.API.Pdf.PuppeteerSharp;
+using PL.Products.API.Pdf.PuppeteerSharp;
 using PL.Products.API.Repositories;
 
 namespace PL.Products.API;

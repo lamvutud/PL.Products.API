@@ -22,10 +22,14 @@
 	  <Content Remove="Templates\PortfolioPerformanceV8.cshtml" />
 	  <Content Remove="Templates\PortfolioPerformanceV9.cshtml" />
 	  <Content Remove="Templates\ProductList.cshtml" />
+	  <Content Remove="Templates\_Footer.cshtml" />
 	</ItemGroup>
 
 	<ItemGroup>
 	  <None Include="Templates\CompositePerformance.cshtml">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Include="Templates\_Footer.cshtml">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
 	  <None Include="Templates\PortfolioPerformanceV12.cshtml">
@@ -98,6 +102,18 @@
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 			<TargetPath>libwkhtmltox.so</TargetPath>
 		</ContentWithTargetPath>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Update="Templates\BuildTOC.js">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="Templates\GetPages.js">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="Templates\TOCAppendPages.js">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
 	</ItemGroup>
 
 </Project>
