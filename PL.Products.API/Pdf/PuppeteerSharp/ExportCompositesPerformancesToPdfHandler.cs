@@ -28,14 +28,14 @@ public class ExportCompositePerformancesToPdfHandler : IPdfWriter<ExportComposit
             ExecutablePath = download.GetExecutablePath(),
         };
         await using var browser = await Puppeteer.LaunchAsync(options);
-        await using var page = await browser.NewPageAsync();        
+        await using var page = await browser.NewPageAsync();
         await page.SetContentAsync(html);
         var buildTOCFunction = await File.ReadAllTextAsync("./Templates/BuildTOC.js");
         await page.EvaluateFunctionAsync(buildTOCFunction);
         await page.WaitForFunctionAsync(@"() => document.querySelectorAll('.toc-entry').length > 0");
         await page.PdfDataAsync(new PdfOptions
         {
-            PrintBackground = true           
+            PrintBackground = true
         });
         var getPagesFunction = await File.ReadAllTextAsync("./Templates/GetPages.js");
         var pageNumbers = await page.EvaluateFunctionAsync<Dictionary<string, int>>(getPagesFunction);
@@ -43,6 +43,9 @@ public class ExportCompositePerformancesToPdfHandler : IPdfWriter<ExportComposit
         await page.EvaluateFunctionAsync(tocAppendPagesFunction, pageNumbers);
         var footerTemplate = await File.ReadAllTextAsync("./Templates/_Footer.cshtml");
         var headerTemplate = await File.ReadAllTextAsync("./Templates/_Header.cshtml");
+        var disclaimerHtml = await File.ReadAllTextAsync("./Templates/_Disclaimer.cshtml");
+        var replcePlaceHolderFunction = await File.ReadAllTextAsync("./Templates/ReplacePlaceHolder.js");
+        await page.EvaluateFunctionAsync(replcePlaceHolderFunction, "#disclaimer-placeholder", disclaimerHtml);
         var bytes = await page.PdfDataAsync(new PdfOptions
         {
             PrintBackground = true,

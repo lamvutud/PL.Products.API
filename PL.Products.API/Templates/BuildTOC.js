@@ -1,6 +1,6 @@
 ﻿() => {
     const tocList = document.getElementById("toc-list");
-    const headers = document.querySelectorAll("h2, h3");
+    const headers = document.querySelectorAll("h2:not(.no-toc), h3:not(.no-toc)");
 
     headers.forEach((header, index) => {
         const id = header.id || `section-${index}`;

@@ -108,6 +108,9 @@
 	  <None Update="Templates\BuildTOC.js">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
+	  <None Update="Templates\ReplacePlaceHolder.js">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
 	  <None Update="Templates\GetPages.js">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>

@@ -7,119 +7,144 @@
 	<style>
 
 		body {
-			font-family: Arial, sans-serif;
+		font-family: Arial, sans-serif;
 		}
 
 		.page-break {
-			page-break-after: always;
+		page-break-after: always;
 		}
 
 		.table {
-			width: 100%;
-			border-collapse: collapse;
+		width: 100%;
+		border-collapse: collapse;
 		}
 
-			.table th, .table td {
-				border: 1px solid black;
-				padding: 8px;
-				text-align: center;
-			}
+		.table th, .table td {
+		border: 1px solid black;
+		padding: 8px;
+		text-align: center;
+		}
 
-			.table th {
-				font-weight: bold;
-			}
+		.table th {
+		font-weight: bold;
+		}
 
 		.footer {
-			position: fixed;
-			bottom: 10px;
-			width: 100%;
-			text-align: center;
-			font-size: 12px;
+		position: fixed;
+		bottom: 10px;
+		width: 100%;
+		text-align: center;
+		font-size: 12px;
 		}
 
 		#toc-content a {
-			display: block;
-			text-decoration: none;
-			color: black;
-			margin-bottom: 5px;
+		display: block;
+		text-decoration: none;
+		color: black;
+		margin-bottom: 5px;
 		}
 
-			#toc-content a[data-level="h2"] {
-				margin-left: 20px;
-			}
+		#toc-content a[data-level="h2"] {
+		margin-left: 20px;
+		}
 
-			#toc-content a[data-level="h3"] {
-				margin-left: 40px;
-			}
+		#toc-content a[data-level="h3"] {
+		margin-left: 40px;
+		}
 
 		.chart-container {
-			width: 50%;
-			display: inline-block;
-			padding: 10px;
-			box-sizing: border-box;
-			vertical-align: top; /* Align charts to the top of the container */
+		width: 50%;
+		display: inline-block;
+		padding: 10px;
+		box-sizing: border-box;
+		vertical-align: top; /* Align charts to the top of the container */
 		}
 
 		canvas {
-			width: 100% !important;
-			/* height: 400px !important; /* Same height for both charts */ */
+		width: 100% !important;
+		/* height: 400px !important; /* Same height for both charts */ */
 		}
 
 		.charts-wrapper {
-			width: 100%;
-			display: flex;
-			justify-content: space-between;
+		width: 100%;
+		display: flex;
+		justify-content: space-between;
 		}
 
 		/* Styling for the header number in superscript (small and near the text) */
 		th.return-column, th.benchmark-column {
-			position: relative;
+		position: relative;
 		}
 
 		.superscript {
-			font-size: 0.8em;
-			vertical-align: super; /* Align the superscript with the text */
-			margin-left: 5px; /* Adjust spacing between the superscript and the text */
+		font-size: 0.8em;
+		vertical-align: super; /* Align the superscript with the text */
+		margin-left: 5px; /* Adjust spacing between the superscript and the text */
 		}
 
 		/* Styling for the footnote */
 		.table-footnote {
-			font-size: 12px;
-			font-style: italic;
-			margin-top: 10px;
-			text-align: left;
+		font-size: 12px;
+		font-style: italic;
+		margin-top: 10px;
+		text-align: left;
 		}
 
 		/* Styling for the small footnote number in the text */
 		.footnote-number {
-			font-size: 10px; /* Smaller font for footnote number */
-			vertical-align: top;
+		font-size: 10px; /* Smaller font for footnote number */
+		vertical-align: top;
 		}
 
 		.total-row td {
-			font-weight: bold;
+		font-weight: bold;
 		}
 
 		.disclaimer {
-			column-count: 2;
-			column-gap: 40px; /* Adjust the space between columns */
-			text-align: justify; /* Optional: Justifies the text */
+		column-count: 2;
+		column-gap: 40px; /* Adjust the space between columns */
+		text-align: justify; /* Optional: Justifies the text */
 		}
 
 		#toc {
-			border: 1px solid #ccc;
-			padding: 10px;
-			margin-bottom: 20px;
+		border: 1px solid #ccc;
+		padding: 10px;
+		margin-bottom: 20px;
 		}
 
 		h1, h2, h3 {
-			counter-increment: section;
+		counter-increment: section;
 		}
 
 		.toc-entry {
-			display: flex;
-			justify-content: space-between;
+		display: flex;
+		justify-content: space-between;
 		}
+
+		#toc-list {
+		list-style: none; /* Removes default list styling */
+		padding: 0;
+		margin: 0;
+		}
+
+		#toc-list li {
+		font-weight: bold; /* Makes all TOC text bold */
+		display: flex; /* Aligns text and page number horizontally */
+		justify-content: space-between; /* Ensures title and page number are aligned */
+		padding: 5px 0;
+		}
+
+		#toc-list a {
+		text-decoration: none; /* Removes underline */
+		color: inherit; /* Keeps text color as normal text */
+		flex-grow: 1; /* Allows text to take available space */
+		}
+
+		.toc-page {
+		font-weight: bold; /* Makes page number bold */
+		}
+
+
 	</style>
 	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
@@ -251,37 +276,17 @@
 	<div class="page-break"></div>
 
 	<!-- Third Page: Disclaimer -->
-	<h2>Disclaimer</h2>
-	<div class="disclaimer">
-		<p><strong>Global Investment Performance Standards (GIPS) Report Disclaimer</strong></p>
-
-		<p>This report is prepared in compliance with the <strong>Global Investment Performance Standards (GIPS&reg;)</strong>. The firm claims compliance with GIPS and has been independently verified for the periods specified in the report. A copy of the verification report and a complete list of composite descriptions are available upon request.</p>
-
-		<p><em>Past performance is not indicative of future results</em>. Investment returns and principal values fluctuate, and investors may experience gains or losses. Performance is presented gross and net of fees. <strong>Gross performance</strong> does not reflect the deduction of investment management fees, brokerage commissions, or other expenses that may impact returns. <strong>Net performance</strong> reflects the deduction of fees as specified in the composite's fee schedule.</p>
-
-		<p>Returns are calculated using a time-weighted methodology, incorporating reinvestment of dividends and interest. All performance figures are expressed in the base currency of the composite. Exchange rate fluctuations may affect returns for investors transacting in different currencies.</p>
-
-		<p>The benchmark used for comparison is selected based on the strategy's investment objective and risk profile. Benchmarks may not be directly comparable to the composite due to differences in market exposure, risk, and other factors. <em>It is essential for investors to consider their own financial situation and investment objectives before making any investment decisions.</em></p>
-
-		<p>The information contained in this report is provided for informational purposes only and should not be considered an offer to buy or sell any financial instrument. No representation is made that any strategy will achieve its intended results, and all investments involve risks, including possible loss of principal.</p>
-
-		<p><strong>Important Risk Disclosures:</strong></p>
-		<ul>
-			<li>Performance data may be affected by market conditions, economic factors, and regulatory changes.</li>
-			<li>Past performance does not guarantee future results.</li>
-			<li>Risk factors such as liquidity constraints, leverage, and concentration may impact returns.</li>
-		</ul>
-
-		<p>This report is intended solely for institutional investors and should not be distributed to retail clients or the general public without prior consent. The firm reserves the right to update or modify the information presented in this document without prior notice.</p>
-
-		<p>For more information regarding performance calculations, investment risks, and composite construction, please contact us at <strong>[Insert Contact Information]</strong>.</p>
-
+	<div id="disclaimer-placeholder">
+		<!-- The disclaimer content will be injected here -->
 	</div>
 
-	@* <div class="page-break"></div> *@
+	<div class="page-break"></div> 
 
 	<!-- Fourth Page: Disclosures -->
-	<h2>Disclosures</h2>
+	<div id="closure-placeholder">
+		<!-- The disclosure content will be injected here -->
+	</div>
+	<h2 class="no-toc">Disclosures</h2>
 	<p>
 		Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
 		Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure
