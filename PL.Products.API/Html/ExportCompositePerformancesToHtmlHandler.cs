@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Razor.Templating.Core;
 using RazorLight;
 using System;
 using System.IO;
